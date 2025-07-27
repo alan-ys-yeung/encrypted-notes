@@ -8,6 +8,46 @@ import os
 # Use a flag to keep main loop running until user decides to quit
 keep_running = True
 
+# Create a 'notes/' directory to store notes created by this program
+NOTES_DIR = 'notes'
+os.makedirs(NOTES_DIR, exist_ok=True)
+
+
+def create_note():
+    filename = input('Enter a filename: ').strip()
+    filepath = os.path.join(NOTES_DIR, filename + '.txt')
+
+    if os.path.exists(filepath):
+        print('A note with this file name already exists.')
+        return
+
+    message = input('Type your message here:\n> ')
+    with open(filepath, 'w') as file:
+        file.write(message)
+    print('Note saved.')
+
+
+def open_note():
+    filename = input('Enter the note file name: ').strip()
+    filepath = os.path.join(NOTES_DIR, filename + '.txt')
+
+    try:
+        with open(filepath, 'r') as file:
+            print(file.read())
+    except FileNotFoundError:
+        print('Error: File not found.')
+
+
+def delete_note():
+    filename = input('Enter the file name of the note to delete: ').strip()
+    filepath = os.path.join(NOTES_DIR, filename + '.txt')
+
+    try:
+        os.remove(filepath)
+    except FileNotFoundError:
+        print('Error: File not found.')
+
+
 while keep_running:
     print('Welcome to Encrypted Notes. What would you like to do?\n'
         '\t1. Create a new note\n'
@@ -21,25 +61,11 @@ while keep_running:
 
     match user_option:
         case '1':
-            print('Creating a new note.')
-
-            print('Enter a filename: ', end='')
-            filename = input()
-
-            print('Type your message here: ', end='')
-            message = input()
-
-            with open(filename + '.txt', 'w') as file:
-                file.write(message)
+            create_note()
         case '2':
-            print('Enter the name of the file to open: ', end='')
-
-            with open(input() + '.txt', 'r') as file:
-                print(file.read())
+            open_note()
         case '3':
-            print('Enter the name of the file to delete: ', end='')
-
-            os.remove(input() + '.txt')
+            delete_note()
         case '4':
             print('Exiting program.')
             keep_running = False
