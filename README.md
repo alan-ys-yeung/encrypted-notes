@@ -1,7 +1,12 @@
 # encrypted-notes
 CLI program that allows you to read/write, encrypt/decrypt notes in text files.
 
-## Project Goals/Checklist
+## Current Features
 - Create/read/write files using Python
 - Encrypt/decrypt files using Python cryptography
-- Create CLI for easy user interaction
+- Minimal CLI for usage
+
+## Future Features
+- Cleaner CLI for easier use
+- Allow editing notes
+- Better text editor

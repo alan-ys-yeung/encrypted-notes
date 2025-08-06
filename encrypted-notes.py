@@ -24,9 +24,10 @@ def create_note():
         print('A note with this file name already exists.')
         return
 
+    password = input('Enter a password: \n>')
     message = input('Type your message here:\n> ')
-    with open(filepath, 'w') as file:
-        file.write(message)
+    with open(filepath, 'wb') as file:
+        file.write(encrypt_message(message, password))
     print('Note saved.')
 
 
@@ -35,10 +36,15 @@ def open_note():
     filepath = os.path.join(NOTES_DIR, filename + '.txt')
 
     try:
-        with open(filepath, 'r') as file:
-            print(file.read())
+        with open(filepath, 'rb') as file:
+            encrypted_message = file.read()
+            password = input('Enter the password to decrypt:\n>')
+            message = decrypt_message(encrypted_message, password)
+            print(message)
     except FileNotFoundError:
         print('Error: File not found.')
+    except:
+        print('File corrupted or wrong password.')
 
 
 def delete_note():
@@ -54,6 +60,18 @@ def delete_note():
 # Create a fixed-size 32 byte key since AES uses a 32b key
 def generate_key_from_password(password: str) -> bytes:
     return base64.urlsafe_b64encode(hashlib.sha256(password.encode()).digest())
+
+
+def encrypt_message(message: str, password: str) -> bytes:
+    key = generate_key_from_password(password)
+    fernet = Fernet(key)
+    return fernet.encrypt(message.encode())
+
+
+def decrypt_message(message: bytes, password: str) -> str:
+    key = generate_key_from_password(password)
+    fernet = Fernet(key)
+    return fernet.decrypt(message).decode()
 
 
 while keep_running:
