@@ -3,6 +3,9 @@
 # Created by Alan Yeung
 # July 21, 2025
 
+from cryptography.fernet import Fernet
+import base64
+import hashlib
 import os
 
 # Use a flag to keep main loop running until user decides to quit
@@ -46,6 +49,11 @@ def delete_note():
         os.remove(filepath)
     except FileNotFoundError:
         print('Error: File not found.')
+
+
+# Create a fixed-size 32 byte key since AES uses a 32b key
+def generate_key_from_password(password: str) -> bytes:
+    return base64.urlsafe_b64encode(hashlib.sha256(password.encode()).digest())
 
 
 while keep_running:
